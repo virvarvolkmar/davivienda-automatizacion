@@ -135,13 +135,13 @@ def actualizar_base_consolidada(df):
     base.to_csv(BASE_CONSOLIDADA, index=False)
 
 
-print("Consultando API oficial...")
-pdf_url = obtener_ultimo_reporte_api()
+def main():
+    print("Consultando API oficial...")
+    pdf_url = obtener_ultimo_reporte_api()
 
-if not pdf_url:
-    print("No se encontró PDF en API.")
-    return
-
+    if not pdf_url:
+        print("No se encontró PDF en API.")
+        return
 
     ruta_pdf, nombre_pdf = descargar_pdf(pdf_url)
 
