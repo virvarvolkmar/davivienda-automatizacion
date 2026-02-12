@@ -19,33 +19,33 @@ os.makedirs(PDF_FOLDER, exist_ok=True)
 os.makedirs(CSV_FOLDER, exist_ok=True)
 os.makedirs("logs", exist_ok=True)
 
-def obtener_articulo_espanol():
-    response = requests.get(PAGE_URL)
-    soup = BeautifulSoup(response.text, "lxml")
+def obtener_ultimo_reporte_api():
+    url_api = "https://apis-vision.davivienda.com/api/vd/site/report/get_reports_by_category"
 
-    meses_es = [
-        "enero", "febrero", "marzo", "abril", "mayo", "junio",
-        "julio", "agosto", "septiembre", "octubre",
-        "noviembre", "diciembre"
-    ]
+    payload = {
+        "id_category": 89,
+        "language": "ES",
+        "limit": 4,
+        "page": 1
+    }
 
-    links = soup.find_all("a", href=True)
-    articulos_validos = []
+    response = requests.post(url_api, json=payload)
+    data = response.json()
 
-    for link in links:
-        href = link["href"].lower()
+    reportes = data.get("data", {}).get("reports", [])
 
-        if "inversionistas-acciones" in href:
-            if any(mes in href for mes in meses_es):
-                if not href.startswith("http"):
-                    href = urljoin(BASE_URL, href)
+    if not reportes:
+        print("No se encontraron reportes en la API.")
+        return None
 
-                articulos_validos.append(href)
+    # Tomar el más reciente (el primero normalmente)
+    ultimo = reportes[0]
 
-    if articulos_validos:
-        return articulos_validos[0]
+    # Buscar el PDF dentro del objeto
+    pdf_url = ultimo.get("file")
 
-    return None
+    return pdf_url
+
 
 
 def obtener_pdf_desde_articulo(url_articulo):
