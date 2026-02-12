@@ -135,20 +135,13 @@ def actualizar_base_consolidada(df):
     base.to_csv(BASE_CONSOLIDADA, index=False)
 
 
-def main():
-    print("Buscando artículo en español...")
-    articulo = obtener_articulo_espanol()
+print("Consultando API oficial...")
+pdf_url = obtener_ultimo_reporte_api()
 
-    if not articulo:
-        print("No se encontró artículo válido.")
-        return
+if not pdf_url:
+    print("No se encontró PDF en API.")
+    return
 
-    print("Buscando PDF...")
-    pdf_url = obtener_pdf_desde_articulo(articulo)
-
-    if not pdf_url:
-        print("No se encontró PDF.")
-        return
 
     ruta_pdf, nombre_pdf = descargar_pdf(pdf_url)
 
