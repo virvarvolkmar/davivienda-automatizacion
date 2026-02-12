@@ -19,22 +19,31 @@ os.makedirs(PDF_FOLDER, exist_ok=True)
 os.makedirs(CSV_FOLDER, exist_ok=True)
 os.makedirs("logs", exist_ok=True)
 
-
 def obtener_articulo_espanol():
     response = requests.get(PAGE_URL)
     soup = BeautifulSoup(response.text, "lxml")
 
+    meses_es = [
+        "enero", "febrero", "marzo", "abril", "mayo", "junio",
+        "julio", "agosto", "septiembre", "octubre",
+        "noviembre", "diciembre"
+    ]
+
     links = soup.find_all("a", href=True)
+    articulos_validos = []
 
     for link in links:
-        texto = link.get_text(strip=True)
-        href = link["href"]
+        href = link["href"].lower()
 
-        if not href.startswith("http"):
-            href = urljoin(BASE_URL, href)
+        if "inversionistas-acciones" in href:
+            if any(mes in href for mes in meses_es):
+                if not href.startswith("http"):
+                    href = urljoin(BASE_URL, href)
 
-        if "Inversionistas" in texto and "Foreign" not in texto:
-            return href
+                articulos_validos.append(href)
+
+    if articulos_validos:
+        return articulos_validos[0]
 
     return None
 
