@@ -1,1 +1,9 @@
+requests
+beautifulsoup4
+lxml
+pandas
+pdf2image
+pytesseract
+yfinance
+matplotlib
 
