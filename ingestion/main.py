@@ -32,6 +32,8 @@ def obtener_ultimo_reporte_api():
     response = requests.post(url_api, json=payload)
     data = response.json()
 
+    print(data)
+
     reportes = data.get("data", {}).get("reports", [])
 
     if not reportes:
